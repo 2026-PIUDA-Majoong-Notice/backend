@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "password_reset_tokens")
+@Table(name = "tokens")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PasswordResetToken {
 

@@ -20,34 +20,28 @@ public class PostUserService {
 
     @Transactional
     public PostUserResponse execute(PostUserRequest request) {
-        String normalizedEmail = request.getEmail().trim().toLowerCase();
+        String email = request.getEmail().trim().toLowerCase();
+        String name = request.getName().trim();
 
-        validatePasswordConfirmation(request);
-        validateEmailNotDuplicated(normalizedEmail);
-
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-
-        User user = User.create(normalizedEmail, encodedPassword);
-        User savedUser = userRepository.save(user);
-
-        return new PostUserResponse(savedUser.getId(), savedUser.getEmail());
-    }
-
-    private void validatePasswordConfirmation(PostUserRequest request) {
         boolean passwordMatched = request.getPassword().equals(request.getPasswordConfirm());
 
         if (passwordMatched == false) {
             throw new HttpException.BadRequest(
-                    "Body[password] and Body[passwordConfirm] must be same"
+                    "body[password] and body[passwordConfirm] must be same"
             );
         }
-    }
 
-    private void validateEmailNotDuplicated(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new HttpException.Conflict(
-                    "Body[email] must be unique"
+                    "body[email] must be unique"
             );
         }
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
+        User user = User.create(email, encodedPassword, name);
+        User savedUser = userRepository.save(user);
+
+        return new PostUserResponse(savedUser.getId());
     }
 }

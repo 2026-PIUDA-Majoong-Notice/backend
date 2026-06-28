@@ -8,5 +8,4 @@ import lombok.RequiredArgsConstructor;
 public class PostUserResponse {
 
     private final Long userId;
-    private final String email;
 }

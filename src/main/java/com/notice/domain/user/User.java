@@ -17,43 +17,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, unique = true, length = 320)
     private String email;
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false, length = 30)
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;
 
     @Column(nullable = false)
-    private boolean emailVerified;
-
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    private User(String email, String password, Role role, boolean emailVerified) {
+    private User(String email, String password, String name) {
         this.email = email;
         this.password = password;
-        this.role = role;
-        this.emailVerified = emailVerified;
+        this.name = name;
+        this.role = Role.USER;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static User create(String email, String encodedPassword) {
-        return new User(email, encodedPassword, Role.USER, false);
+    public static User create(String email, String password, String name) {
+        return new User(email, password, name);
     }
 
-    public void verifyEmail() {
-        this.emailVerified = true;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void updatePassword(String encodedPassword) {
-        this.password = encodedPassword;
+    public void updatePassword(String password) {
+        this.password = password;
         this.updatedAt = LocalDateTime.now();
     }
 }
